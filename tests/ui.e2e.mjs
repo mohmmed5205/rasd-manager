@@ -64,6 +64,8 @@ try {
   await page.screenshot({ path: 'test-results/mobile.png', fullPage: true })
   assert.equal(await page.getByRole('button', { name: 'بدء التحليل' }).isDisabled(), true)
   assert.equal(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth), true)
+  const mobileNav = await page.getByRole('navigation', { name: 'أقسام التطبيق' }).boundingBox()
+  assert.ok(mobileNav && mobileNav.height < 100, 'Mobile navigation should remain compact')
   await page.getByLabel('اختيار ملف رصد', { exact: true }).setInputFiles(fixture('manual.xlsx', [['custom batch', ...headers.slice(1)], ['001', 'Tab', 0, 1, 0, 0, '001']]))
   await page.getByText('manual.xlsx', { exact: true }).waitFor()
   await page.getByLabel('ملف رصد: رقم الباتش', { exact: true }).selectOption('0')

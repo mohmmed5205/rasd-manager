@@ -5,6 +5,7 @@ import { Audit, Results } from './components/Results.tsx'
 import { Review } from './components/Review.tsx'
 import { Button, colors, Icon, inputStyle, number, panel, SectionTitle } from './components/ui.tsx'
 import { useAnalysisWorker } from './hooks/useAnalysisWorker.ts'
+import { useCompactLayout } from './hooks/useCompactLayout.ts'
 import { reportFilename, validateMapping, validateMonth } from './lib/analysis.ts'
 import type { AnalysisResult, Inspection, Mapping, Slot, WorkerReply } from './types.ts'
 
@@ -14,6 +15,7 @@ function currentMonth(): string {
 }
 
 export default function App() {
+  const compact = useCompactLayout()
   const [sources, setSources] = useState<Record<Slot, Inspection | null>>({ rasd: null, warehouse: null })
   const [month, setMonth] = useState(currentMonth)
   const [filename, setFilename] = useState('')
@@ -93,12 +95,12 @@ export default function App() {
       <div style={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap', gap: 15 }}><span style={{ display: 'inline-flex', alignItems: 'center', gap: 7, color: '#54816b', background: '#eff8f2', padding: '6px 12px', borderRadius: 30, fontSize: 11 }}><Icon name="shield" size={15} />ملفاتك تبقى على جهازك</span><span style={{ fontSize: 11, color: colors.muted }}>تحليل ملفات Excel</span></div>
     </header>
     <div style={{ maxWidth: 1530, marginInline: 'auto', padding: '30px clamp(14px, 3vw, 42px)', display: 'flex', flexWrap: 'wrap', gap: 28, alignItems: 'flex-start' }}>
-      <aside style={{ flex: '1 1 190px', maxWidth: 250, minWidth: 170 }}>
-        <p style={{ color: '#9aa6ae', fontSize: 10, letterSpacing: 1, paddingInline: 12, marginBottom: 14 }}>مساحة العمل</p>
-        <nav aria-label="أقسام التطبيق" style={{ display: 'grid', gap: 8 }}>{[
+      <aside style={{ flex: compact ? '1 1 100%' : '1 1 190px', maxWidth: compact ? undefined : 250, minWidth: compact ? 0 : 170 }}>
+        {!compact && <p style={{ color: '#9aa6ae', fontSize: 10, letterSpacing: 1, paddingInline: 12, marginBottom: 14 }}>مساحة العمل</p>}
+        <nav aria-label="أقسام التطبيق" style={{ display: compact ? 'flex' : 'grid', flexWrap: 'wrap', gap: 8 }}>{[
           ['#upload', 'upload', 'تحليل جديد'], ['#results', 'chart', 'نتائج التحليل'], ['#audit', 'file', 'جودة البيانات'],
-        ].map(([href, icon, label], index) => <a key={href} href={href} style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '12px 15px', borderRadius: 10, textDecoration: 'none', fontSize: 13, fontWeight: index === 0 ? 700 : 400, background: index === 0 ? '#e6f1eb' : 'transparent', color: index === 0 ? colors.green : '#77878f' }}><Icon name={icon as 'upload' | 'chart' | 'file'} size={19} />{label}</a>)}</nav>
-        <div style={{ marginTop: 40, padding: 18, border: `1px solid #dce8e1`, borderRadius: 13, background: '#edf5ef', fontSize: 12, color: '#5b7867' }}><Icon name="shield" size={22} /><p style={{ fontWeight: 700, marginBottom: 6 }}>معالجة محلية بالكامل</p><p style={{ margin: 0, fontSize: 11, lineHeight: 1.9 }}>نقرأ الملفات داخل متصفحك. لا يتم رفعها أو حفظها على خادم، وتُزال من الذاكرة عند إعادة التهيئة أو إغلاق الصفحة.</p></div>
+        ].map(([href, icon, label], index) => <a key={href} href={href} style={{ display: 'flex', alignItems: 'center', gap: compact ? 6 : 12, padding: compact ? '10px 8px' : '12px 15px', borderRadius: 10, textDecoration: 'none', fontSize: compact ? 11 : 13, fontWeight: index === 0 ? 700 : 400, background: index === 0 ? '#e6f1eb' : 'transparent', color: index === 0 ? colors.green : '#77878f' }}><Icon name={icon as 'upload' | 'chart' | 'file'} size={compact ? 16 : 19} />{label}</a>)}</nav>
+        {!compact && <div style={{ marginTop: 40, padding: 18, border: `1px solid #dce8e1`, borderRadius: 13, background: '#edf5ef', fontSize: 12, color: '#5b7867' }}><Icon name="shield" size={22} /><p style={{ fontWeight: 700, marginBottom: 6 }}>معالجة محلية بالكامل</p><p style={{ margin: 0, fontSize: 11, lineHeight: 1.9 }}>نقرأ الملفات داخل متصفحك. لا يتم رفعها أو حفظها على خادم، وتُزال من الذاكرة عند إعادة التهيئة أو إغلاق الصفحة.</p></div>}
       </aside>
       <main style={{ flex: '10 1 740px', minWidth: 0, display: 'grid', gap: 22 }}>
         <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'space-between', gap: 16, alignItems: 'center', marginBottom: 5 }}><div><p style={{ margin: '0 0 6px', fontSize: 11, color: colors.muted }}>مساحة العمل / تحليل الباتشات</p><h1 style={{ margin: 0, fontSize: 'clamp(23px, 3vw, 30px)', fontWeight: 700 }}>من ملفاتك إلى تقرير واضح<span style={{ color: '#399b75' }}>.</span></h1><p style={{ color: colors.muted, margin: '8px 0 0', fontSize: 13 }}>طابق ملف رصد مع المستودع، وراجع الباتشات الموجودة في رصد فقط.</p></div><Button secondary onClick={reset} style={{ fontSize: 12 }}>{busy ? 'إلغاء وإعادة التهيئة' : 'إعادة تهيئة'}</Button></div>
