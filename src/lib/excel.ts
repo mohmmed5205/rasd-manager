@@ -30,7 +30,7 @@ function sourceCell(cell: XLSX.CellObject | undefined): SourceCell {
   const type = cell.t === 'n' || cell.t === 'b' || cell.t === 'e' || cell.t === 'z' ? cell.t : 's'
   const value = cell.v === undefined || cell.v === null ? null
     : typeof cell.v === 'number' || typeof cell.v === 'boolean' || typeof cell.v === 'string' ? cell.v : String(cell.v)
-  return { type, value, display: cell.w ?? (value === null ? '' : String(value)), ...(cell.z ? { format: cell.z } : {}) }
+  return { type, value, display: cell.w ?? (value === null ? '' : String(value)), ...(typeof cell.z === 'string' ? { format: cell.z } : {}) }
 }
 
 function rowAt(sheet: XLSX.WorkSheet, row: number, lastColumn: number): SourceRow {
