@@ -9,7 +9,7 @@
 ```bash
 git clone https://github.com/mohmmed5205/rasd-manager.git
 cd rasd-manager
-npm install
+npm ci
 npm run dev
 ```
 
@@ -126,7 +126,13 @@ tests/
 
 `npm run build` ينتج مجلد `dist` القابل للنشر على أي استضافة ثابتة. `base: './'` يسمح أيضًا باستضافة المشروع تحت مسار مستودع. يمكنك نشر المستودع على Vercel أو Netlify بإعداد build = `npm run build` وoutput = `dist`، دون متغيرات بيئة.
 
-لا يوجد نشر تلقائي قبل اختيار الاستضافة. سير GitHub Actions يرفق نسخة `dist` باسم `rasd-manager-build` بعد نجاح جميع الفحوص. يجب تثبيت المكتبات بنجاح قبل تشغيل الواجهة أو اختبارها. مصدر SheetJS الرسمي: https://docs.sheetjs.com/docs/getting-started/installation/nodejs/
+للنشر على GitHub Pages:
+
+1. افتح Settings → Pages في المستودع واجعل Source = GitHub Actions.
+2. افتح Actions → Deploy GitHub Pages → Run workflow.
+3. بعد نجاح النشر يظهر الرابط في نتيجة سير النشر. العنوان المتوقع هو `https://mohmmed5205.github.io/rasd-manager/`، لكنه لا يعمل قبل تفعيل Pages وإتمام النشر.
+
+لا يوجد نشر تلقائي قبل اختيار الاستضافة. سير التحقق يرفق نسخة `dist` باسم `rasd-manager-build` بعد نجاح جميع الفحوص. يجب تثبيت المكتبات بنجاح قبل تشغيل الواجهة أو اختبارها. مصدر SheetJS الرسمي: https://docs.sheetjs.com/docs/getting-started/installation/nodejs/
 
 ## نطاق التحقق
 

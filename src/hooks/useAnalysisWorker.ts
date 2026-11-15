@@ -34,6 +34,12 @@ export function useAnalysisWorker() {
         instance.terminate()
         worker.current = null
       }
+      instance.onmessageerror = () => {
+        for (const job of pending.current.values()) job.reject(new Error('تعذر نقل بيانات المعالجة. أعد التهيئة وارفع الملفين مجددًا.'))
+        pending.current.clear()
+        instance.terminate()
+        worker.current = null
+      }
     }
     return new Promise((resolve, reject) => {
       const id = ++nextId.current

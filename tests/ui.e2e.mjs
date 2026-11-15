@@ -26,6 +26,8 @@ const warehouse = fixture('synthetic-warehouse.xlsx', [['Batch No'], ['m'], [' M
 try {
   await page.goto(process.env.APP_URL || 'http://127.0.0.1:4173', { waitUntil: 'networkidle' })
   await page.getByRole('heading', { level: 1 }).waitFor()
+  await fs.mkdir('test-results', { recursive: true })
+  await page.screenshot({ path: 'test-results/desktop.png', fullPage: true })
   assert.equal(await page.getByRole('button', { name: 'بدء التحليل' }).isDisabled(), true)
   await page.getByLabel('اختيار ملف رصد', { exact: true }).setInputFiles(rasd)
   await page.getByText('synthetic-rasd.xlsx', { exact: true }).waitFor()
@@ -59,6 +61,7 @@ try {
   assert.equal(active[mainIndex + 1][2], '0001')
   await page.setViewportSize({ width: 390, height: 844 })
   await page.getByRole('button', { name: 'إعادة تهيئة', exact: true }).click()
+  await page.screenshot({ path: 'test-results/mobile.png', fullPage: true })
   assert.equal(await page.getByRole('button', { name: 'بدء التحليل' }).isDisabled(), true)
   assert.equal(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth), true)
   await page.getByLabel('اختيار ملف رصد', { exact: true }).setInputFiles(fixture('manual.xlsx', [['custom batch', ...headers.slice(1)], ['001', 'Tab', 0, 1, 0, 0, '001']]))
